@@ -10,6 +10,12 @@ export class UserRepository {
     return this.prisma.user.findMany({ where });
   }
 
+  listOne(where: Prisma.UserWhereInput) {
+    return this.prisma.user.findFirst({
+      where,
+    });
+  }
+
   create(data: Prisma.UserCreateInput) {
     return this.prisma.user.create({
       data,

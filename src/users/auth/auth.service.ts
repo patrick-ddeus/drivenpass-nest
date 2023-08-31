@@ -1,0 +1,46 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { SignUpDto } from './dto/signup.dto';
+import { UsersService } from '../users.service';
+import { SignInDto } from './dto/signin.dto';
+import * as bcrypt from 'bcrypt';
+import { User } from '@prisma/client';
+
+@Injectable()
+export class AuthService {
+  private ISSUER: string;
+  constructor(
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {
+    this.ISSUER = 'Driven';
+  }
+
+  signUp(signUpDto: SignUpDto) {
+    return this.userService.create(signUpDto);
+  }
+
+  async signIn(signInDto: SignInDto) {
+    const { email, password } = signInDto;
+
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) throw new UnauthorizedException();
+
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+
+    if (!passwordIsValid) throw new UnauthorizedException();
+
+    return this.generateToken({ email: user.email, id: user.id });
+  }
+
+  private async generateToken(payload: JWTPayload) {
+    return {
+      access_token: this.jwtService.sign(payload, {
+        issuer: this.ISSUER,
+      }),
+    };
+  }
+}
+
+type JWTPayload = Pick<User, 'email' | 'id'>;
