@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  Credential Credential[]
+  Annotation Annotation[]
+  CreditCard CreditCard[]
+  License    License[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@map("users")
+}
+
+model Credential {
+  id        Int      @id @default(autoincrement())
+  title     String
+  url       String
+  username  String
+  password  String
+  Author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([authorId, title])
+  @@map("credentials")
+}
+
+model Annotation {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  Author      User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([authorId, title])
+  @@map("annotations")
+}
+
+enum CardType {
+  CREDIT
+  DEBIT
+  BOTH
+}
+
+model CreditCard {
+  id             Int      @id @default(autoincrement())
+  title          String
+  number         String
+  name           String
+  expirationDate DateTime
+  secureCode     String
+  password       String
+  isVirtual      Boolean
+  type           CardType
+  Author         User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId       Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([authorId, title])
+  @@map("creditCards")
+}
+
+model License {
+  id              Int    @id @default(autoincrement())
+  softwareName    String
+  softwareVersion String
+  licenseKey      String
+  authorId        Int
+  Author          User   @relation(fields: [authorId], references: [id])
+
+  @@unique([softwareName, softwareVersion, licenseKey, authorId])
+  @@map("licenses")
+}
