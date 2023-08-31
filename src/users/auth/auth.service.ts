@@ -34,12 +34,18 @@ export class AuthService {
     return this.generateToken({ email: user.email, id: user.id });
   }
 
-  private async generateToken(payload: JWTPayload) {
+  private generateToken(payload: JWTPayload) {
     return {
       access_token: this.jwtService.sign(payload, {
         issuer: this.ISSUER,
       }),
     };
+  }
+
+  async validateToken(token: string) {
+    return await this.jwtService.verifyAsync(token, {
+      issuer: this.ISSUER,
+    });
   }
 }
 
