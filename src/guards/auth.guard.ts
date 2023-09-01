@@ -4,14 +4,15 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from '../users/auth/auth.service';
+import { AuthService, JWTPayload } from '../users/auth/auth.service';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<AuthenticatedRoute>();
     const { authorization } = request.headers;
 
     if (!authorization) throw new UnauthorizedException('Invalid Token!');
@@ -25,11 +26,14 @@ export class AuthGuard implements CanActivate {
     if (schema !== 'Bearer') throw new UnauthorizedException('Invalid Token!');
 
     try {
-      await this.authService.validateToken(token);
+      const data = await this.authService.validateToken(token);
+      request.user = { email: data.email, id: data.id };
       return true;
     } catch (error) {
-      console.log(error);
+      throw new UnauthorizedException('Invalid Token!');
       return false;
     }
   }
 }
+
+export type AuthenticatedRoute = Request & { user: JWTPayload };

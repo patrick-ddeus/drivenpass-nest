@@ -9,6 +9,7 @@ import { User } from '@prisma/client';
 @Injectable()
 export class AuthService {
   private ISSUER: string;
+
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
@@ -43,10 +44,10 @@ export class AuthService {
   }
 
   async validateToken(token: string) {
-    return await this.jwtService.verifyAsync(token, {
+    return await this.jwtService.verifyAsync<JWTPayload>(token, {
       issuer: this.ISSUER,
     });
   }
 }
 
-type JWTPayload = Pick<User, 'email' | 'id'>;
+export type JWTPayload = Pick<User, 'email' | 'id'>;
