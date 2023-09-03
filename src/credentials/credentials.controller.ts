@@ -13,6 +13,7 @@ import { CreateCredentialDto } from './dto/create-credential.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { User } from '../decorators/user.decorator';
 import { JWTPayload } from '../users/auth/auth.service';
+import { ApiBody, ApiHeader } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard)
 @Controller('credentials')
@@ -20,6 +21,14 @@ export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
   @Post()
+  @ApiBody({
+    description: 'Receive title, username, description and password',
+    type: CreateCredentialDto,
+  })
+  @ApiHeader({
+    name: 'Application',
+    description: 'Bearer ',
+  })
   create(
     @Body() createCredentialDto: CreateCredentialDto,
     @User() user: JWTPayload,
