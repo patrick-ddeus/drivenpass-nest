@@ -1,5 +1,12 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { AuthService, JWTPayload } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import {
@@ -9,6 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { User } from '../../decorators/user.decorator';
+import { DeleteDto } from './dto/delete.dto';
 
 class SignInResponse {
   @ApiProperty({ name: 'acess_token', example: 'Bearer Token' })
@@ -55,5 +64,10 @@ export class AuthController {
   })
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
+  }
+
+  @Delete()
+  erase(@User() user: JWTPayload, @Body() deleteDto: DeleteDto) {
+    return this.authService.erase(user, deleteDto);
   }
 }

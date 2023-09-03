@@ -6,6 +6,7 @@ import { SignInDto } from './dto/signin.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
 import { exclude } from '../../utils/prisma.utils';
+import { DeleteDto } from './dto/delete.dto';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,20 @@ export class AuthService {
     if (!passwordIsValid) throw new UnauthorizedException();
 
     return this.generateToken({ email: user.email, id: user.id });
+  }
+
+  async erase(user: JWTPayload, deleteDto: DeleteDto) {
+    const { email, id } = user;
+    const userInDb = await this.userService.findByEmail(email);
+
+    const passwordIsValid = await bcrypt.compare(
+      deleteDto.password,
+      userInDb.password,
+    );
+
+    if (!passwordIsValid) throw new UnauthorizedException();
+
+    return this.userService.remove(id);
   }
 
   private generateToken(payload: JWTPayload) {
