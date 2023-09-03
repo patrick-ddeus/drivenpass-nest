@@ -47,9 +47,13 @@ export class AuthService {
       userInDb.password,
     );
 
-    if (!passwordIsValid) throw new UnauthorizedException();
+    if (!passwordIsValid) {
+      console.log('A senha é inválida');
+      throw new UnauthorizedException();
+    }
+    const deletedUser = await this.userService.remove(id);
 
-    return this.userService.remove(id);
+    return exclude(deletedUser, 'password', 'createdAt', 'updatedAt');
   }
 
   private generateToken(payload: JWTPayload) {

@@ -5,6 +5,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService, JWTPayload } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
@@ -18,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { User } from '../../decorators/user.decorator';
 import { DeleteDto } from './dto/delete.dto';
+import { AuthGuard } from '../../guards/auth.guard';
 
 class SignInResponse {
   @ApiProperty({ name: 'acess_token', example: 'Bearer Token' })
@@ -66,7 +68,21 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @Delete()
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Delete user account' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Returns unauthorized when password is not from user',
+  })
+  @ApiBody({
+    type: DeleteDto,
+  })
+  @UseGuards(AuthGuard)
+  @Delete('/erase')
   erase(@User() user: JWTPayload, @Body() deleteDto: DeleteDto) {
     return this.authService.erase(user, deleteDto);
   }
