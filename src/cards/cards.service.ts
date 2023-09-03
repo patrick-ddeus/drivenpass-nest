@@ -69,7 +69,14 @@ export class CardsService {
 
   async remove(id: number, userId: number) {
     const card = await this.findOne(id, userId);
-    return this.cardsRepository.remove(card.id);
+    const deletedCart = await this.cardsRepository.remove(card.id);
+    return exclude(
+      deletedCart,
+      'password',
+      'secureCode',
+      'createdAt',
+      'updatedAt',
+    );
   }
 
   private validCards(cards: CreditCard, userId: number) {

@@ -5,6 +5,7 @@ import { UsersService } from '../users.service';
 import { SignInDto } from './dto/signin.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
+import { exclude } from '../../utils/prisma.utils';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +18,9 @@ export class AuthService {
     this.ISSUER = 'Driven';
   }
 
-  signUp(signUpDto: SignUpDto) {
-    return this.userService.create(signUpDto);
+  async signUp(signUpDto: SignUpDto) {
+    const createdAcc = await this.userService.create(signUpDto);
+    return exclude(createdAcc, 'password');
   }
 
   async signIn(signInDto: SignInDto) {

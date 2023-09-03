@@ -4,10 +4,13 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateNotesDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'Faker Title', description: 'title for note' })
   title: string;
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({
+    example: 'anything interest',
+    description: 'description for note',
+  })
   description: string;
 }

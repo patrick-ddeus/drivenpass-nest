@@ -9,8 +9,8 @@ import { CreateCredentialDto } from './dto/create-credential.dto';
 import { CredentialsRepository } from './credentials.repository';
 import { JWTPayload } from '../users/auth/auth.service';
 import { exclude } from '../utils/prisma.utils';
-import Cryptr from 'cryptr';
 import { Credential } from '@prisma/client';
+import Cryptr from 'cryptr';
 
 @Injectable()
 export class CredentialsService {
@@ -67,7 +67,10 @@ export class CredentialsService {
 
   async remove(id: number, userId: number) {
     const credential = await this.findOne(id, userId);
-    return this.credentialsRepository.remove(credential.id);
+    const deletedCredential = await this.credentialsRepository.remove(
+      credential.id,
+    );
+    return exclude(deletedCredential, 'password', 'createdAt', 'updatedAt');
   }
 
   private validCredentials(credentials: Credential, userId: number) {

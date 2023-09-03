@@ -45,14 +45,13 @@ export class NotesService {
       authorId: id,
     });
 
-    if (notes.length === 0) return notes;
-
     return notes;
   }
 
   async remove(id: number, userId: number) {
     const note = await this.findOne(id, userId);
-    return this.notesRepository.remove(note.id);
+    const removedNotes = await this.notesRepository.remove(note.id);
+    return exclude(removedNotes, 'updatedAt', 'createdAt', 'description');
   }
 
   private validNotes(notes: Annotation, userId: number) {
