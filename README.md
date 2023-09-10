@@ -10,13 +10,14 @@ O DrivenPass é um gerenciador de senhas desenvolvido em NestJS que permite aos 
 
 O DrivenPass utiliza o banco de dados relacional PostgreSQL para armazenar com segurança as informações dos usuários. O esquema do banco de dados é projetado para garantir a integridade e a segurança dos dados.
 
-## Technologies
+## Tecnologias
 Tecnologias utilizadas para desenvolver o projeto:
 
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
 ## Rotas
 
