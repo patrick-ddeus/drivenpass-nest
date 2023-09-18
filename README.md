@@ -82,6 +82,11 @@ Tecnologias utilizadas para desenvolver o projeto:
     ```bash
     npm i
     ```
+3. Configure as variáves de ambiente
+    ```bash
+    DATABASE_URL=YOUR-POSTGRES-URL
+    SECRET=SECRET-FOR-JWT
+    ```
 
 3. Execute com o comando:
 
